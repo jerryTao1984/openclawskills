@@ -22,7 +22,16 @@ description: >
 |-----|-----|
 | app_token | `T2FqwW8eji1yu7kogIlcmjm7nth` |
 | table_id | `tblQzT4DZYnuPB8A` |
-| view_id | `vewL6TrEga` |
+
+### 项目视图链接
+
+| 项目 | 视图链接 |
+|-----|---------|
+| 项目总表 | https://ewbmxoqgfx.feishu.cn/wiki/T2FqwW8eji1yu7kogIlcmjm7nth?table=tblQzT4DZYnuPB8A&view=vewL6TrEga |
+| 爱推广 | https://ewbmxoqgfx.feishu.cn/wiki/T2FqwW8eji1yu7kogIlcmjm7nth?table=tblQzT4DZYnuPB8A&view=vewdwfAfAI |
+| 如涵播物馆 | https://ewbmxoqgfx.feishu.cn/wiki/T2FqwW8eji1yu7kogIlcmjm7nth?table=tblQzT4DZYnuPB8A&view=vewVMWVHZs |
+| 涵兔兔 | https://ewbmxoqgfx.feishu.cn/wiki/T2FqwW8eji1yu7kogIlcmjm7nth?table=tblQzT4DZYnuPB8A&view=vewlgfXKh8 |
+| 创享储蓄罐 | https://ewbmxoqgfx.feishu.cn/wiki/T2FqwW8eji1yu7kogIlcmjm7nth?table=tblQzT4DZYnuPB8A&view=vewlgfXKh8 |
 
 ## 前置条件
 
@@ -234,6 +243,7 @@ https://ewbmxoqgfx.feishu.cn/docx/xxx
 - **需求名称**（必填）
 - **关联项目**（必填，询问用户选择）
 - **负责人**（可选）
+- **创建人**（必填，默认为当前操作用户，可询问）
 - **截止日期**（可选）
 - **需求状态**（默认"收集需求"）
 - **产品PRD链接**（可选，飞书文档链接）
@@ -257,9 +267,10 @@ https://ewbmxoqgfx.feishu.cn/docx/xxx
 
 - 需求名称：xxx
 - 关联项目：爱推广
-- 负责人：张三
+- 创建人：张三
+- 负责人：张三（可选）
 - 需求状态：收集需求
-- 产品PRD：https://xxx
+- 产品PRD：https://xxx（可选）
 
 确认创建？(是/否)
 ```
@@ -281,6 +292,29 @@ curl -X POST "https://open.feishu.cn/open-apis/bitable/v1/apps/T2FqwW8eji1yu7kog
       "产品PRD": "https://ewbmxoqgfx.feishu.cn/docx/xxx"
     }
   }'
+```
+
+### Step 5: 获取需求链接并生成文案
+
+创建成功后，API 会返回 `record_id`，生成需求分享链接：
+
+```
+https://ewbmxoqgfx.feishu.cn/wiki/T2FqwW8eji1yu7kogIlcmjm7nth?table=tblQzT4DZYnuPB8A&view=vewL6TrEga&record={record_id}
+```
+
+**输出固定的需求生产文案**：
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 需求已创建
+
+📌 需求名称：首页banner优化
+📁 关联项目：爱推广
+📊 需求状态：收集需求
+👤 创建人：张三
+🔗 需求链接：https://ewbmxoqgfx.feishu.cn/wiki/T2FqwW8eji1yu7kogIlcmjm7nth?table=tblQzT4DZYnuPB8A&view=vewL6TrEga&record=recXXX
+📄 PRD文档：https://ewbmxoqgfx.feishu.cn/docx/abc
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ---
@@ -314,13 +348,16 @@ curl -X POST "https://open.feishu.cn/open-apis/bitable/v1/apps/T2FqwW8eji1yu7kog
 
 **Agent**:
 ```
-✅ 需求已创建
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 需求已创建
 
-📝 需求名称：首页banner优化
+📌 需求名称：首页banner优化
 📁 关联项目：爱推广
-👤 负责人：张三
 📊 需求状态：收集需求
-📄 产品PRD：https://ewbmxoqgfx.feishu.cn/docx/abc
+👤 创建人：张三
+🔗 需求链接：https://ewbmxoqgfx.feishu.cn/wiki/T2FqwW8eji1yu7kogIlcmjm7nth?table=tblQzT4DZYnuPB8A&view=vewL6TrEga&record=recXXX
+📄 PRD文档：https://ewbmxoqgfx.feishu.cn/docx/abc
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ---
