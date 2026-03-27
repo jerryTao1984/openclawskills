@@ -1,0 +1,186 @@
+---
+name: feishu-bitable-manager
+description: >
+  飞书多维表格项目进度管理。
+  支持新增、修改、读取项目进度表。
+  Use when: 用户说"查看进度"、"新增任务"、"更新进度"、"项目进度"、"飞书多维表格"、"修改需求"
+---
+
+# 飞书多维表格项目进度管理
+
+## When to Run
+- 用户说"查看项目进度"、"读取进度表"
+- 用户说"新增任务"、"添加需求"
+- 用户说"修改进度"、"更新状态"
+- 用户说"在飞书多维表格中..."
+
+## 前置条件
+
+确保已配置飞书应用权限：
+- `bitable:record:read` - 读取多维表格记录
+- `bitable:record:write` - 写入多维表格记录
+- `bitable:app` - 获取多维表格信息
+
+## 常用操作
+
+### 1. 读取项目进度
+
+**用户说**："查看项目进度"、"读取进度表"
+
+**执行步骤**：
+
+```bash
+# 调用飞书 API 获取多维表格记录
+curl -X GET "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records" \
+  -H "Authorization: Bearer {tenant_access_token}"
+```
+
+**输出格式**：
+```
+📋 项目进度一览
+
+| 任务名称 | 负责人 | 状态 | 截止日期 | 备注 |
+|---------|--------|------|---------|------|
+| 用户登录功能 | 张三 | 进行中 | 2024-01-15 | 待联调 |
+| 支付模块 | 李四 | 未开始 | 2024-01-20 | - |
+```
+
+---
+
+### 2. 新增任务/需求
+
+**用户说**："新增一个任务：xxx"、"添加需求：xxx"
+
+**执行步骤**：
+
+1. 从用户消息提取信息：
+   - 任务名称
+   - 负责人（可选）
+   - 截止日期（可选）
+   - 优先级（可选）
+
+2. 调用 API 新增记录：
+
+```bash
+curl -X POST "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records" \
+  -H "Authorization: Bearer {tenant_access_token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fields": {
+      "任务名称": "用户注册功能",
+      "负责人": "张三",
+      "状态": "未开始",
+      "截止日期": 1704067200000,
+      "优先级": "高"
+    }
+  }'
+```
+
+**确认输出**：
+```
+✅ 任务已添加
+
+📝 任务：用户注册功能
+👤 负责人：张三
+📅 截止日期：2024-01-01
+🔴 优先级：高
+```
+
+---
+
+### 3. 修改任务进度
+
+**用户说**："把xxx改成进行中"、"更新xxx的状态为已完成"
+
+**执行步骤**：
+
+1. 先查询获取 record_id
+2. 调用 API 更新记录：
+
+```bash
+curl -X PUT "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/{record_id}" \
+  -H "Authorization: Bearer {tenant_access_token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fields": {
+      "状态": "已完成"
+    }
+  }'
+```
+
+**确认输出**：
+```
+✅ 任务状态已更新
+
+📝 任务：用户登录功能
+📊 状态：未开始 → 已完成
+```
+
+---
+
+### 4. 按条件筛选
+
+**用户说**："查看张三的任务"、"显示进行中的任务"
+
+**执行 API**：
+
+```bash
+curl -X POST "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/search" \
+  -H "Authorization: Bearer {tenant_access_token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filter": {
+      "conjunction": "and",
+      "conditions": [
+        {
+          "field_name": "状态",
+          "operator": "is",
+          "value": ["进行中"]
+        }
+      ]
+    }
+  }'
+```
+
+---
+
+## 配置说明
+
+使用前需要在飞书开放平台配置：
+
+1. **创建飞书应用**，获取 App ID 和 App Secret
+2. **配置权限**：
+   - `bitable:record:read`
+   - `bitable:record:write`
+   - `bitable:app`
+3. **获取多维表格信息**：
+   - app_token：多维表格的 token（从 URL 获取）
+   - table_id：数据表的 ID
+
+### 从 URL 获取参数
+
+飞书多维表格 URL 格式：
+```
+https://xxx.feishu.cn/base/{app_token}?table={table_id}
+```
+
+---
+
+## 错误处理
+
+| 错误 | 解决方案 |
+|-----|---------|
+| 权限不足 | 检查飞书应用是否配置了对应权限 |
+| token 过期 | 重新获取 tenant_access_token |
+| 记录不存在 | 确认 record_id 是否正确 |
+| 字段不存在 | 确认字段名称与多维表格一致 |
+
+---
+
+## 输出规范
+
+- 使用表格展示列表数据
+- 操作成功显示 ✅
+- 操作失败显示 ❌ 并说明原因
+- 日期格式：YYYY-MM-DD
+- 状态选项：未开始、进行中、已完成、已阻塞

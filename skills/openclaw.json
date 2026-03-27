@@ -1,0 +1,326 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.3.7",
+    "lastTouchedAt": "2026-03-27T04:54:48.486Z"
+  },
+  "wizard": {
+    "lastRunAt": "2026-03-11T04:32:03.688Z",
+    "lastRunVersion": "2026.3.7",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "browser": {
+    "enabled": true,
+    "headless": true,
+    "noSandbox": true
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "custom-coding-dashscope-aliyuncs-com": {
+        "baseUrl": "https://coding.dashscope.aliyuncs.com/v1",
+        "apiKey": "${OPENCLAW_DASHSCOPE_API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "qwen3.5-plus",
+            "name": "qwen3.5-plus (Custom Provider)",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 128000,
+            "maxTokens": 4096
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "custom-coding-dashscope-aliyuncs-com/qwen3.5-plus"
+      },
+      "models": {
+        "custom-coding-dashscope-aliyuncs-com/qwen3.5-plus": {
+          "alias": "qwen3.5-plus"
+        }
+      },
+      "workspace": "/home/openclaw04/.openclaw/workspace",
+      "memorySearch": {
+        "enabled": true,
+        "provider": "openai",
+        "remote": {
+          "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "apiKey": "${OPENCLAW_DASHSCOPE_BL_API_KEY}"
+        },
+        "model": "text-embedding-v3",
+        "sync": {
+          "watch": true
+        }
+      },
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      }
+    },
+    "list": [
+      {
+        "id": "product-manager",
+        "name": "产品经理",
+        "workspace": "/home/openclaw04/.openclaw/workspace/product-manager",
+        "model": {
+          "primary": "custom-coding-dashscope-aliyuncs-com/qwen3.5-plus"
+        },
+        "subagents": {
+          "allowAgents": [
+            "product-manager",
+            "architect",
+            "sales-rep"
+          ]
+        }
+      },
+      {
+        "id": "architect",
+        "name": "架构师",
+        "workspace": "/home/openclaw04/.openclaw/workspace/architect",
+        "model": {
+          "primary": "custom-coding-dashscope-aliyuncs-com/qwen3.5-plus"
+        },
+        "subagents": {
+          "allowAgents": [
+            "product-manager",
+            "architect",
+            "sales-rep"
+          ]
+        }
+      },
+      {
+        "id": "sales-rep",
+        "name": "产品销售",
+        "workspace": "/home/openclaw04/.openclaw/workspace/sales-rep",
+        "model": {
+          "primary": "custom-coding-dashscope-aliyuncs-com/qwen3.5-plus"
+        },
+        "subagents": {
+          "allowAgents": [
+            "product-manager",
+            "architect",
+            "sales-rep"
+          ]
+        }
+      },
+      {
+        "id": "product_ops",
+        "name": "product_ops",
+        "workspace": "/home/openclaw04/.openclaw/workspace-product_ops",
+        "agentDir": "/home/openclaw04/.openclaw/agents/product_ops/agent"
+      }
+    ]
+  },
+  "tools": {
+    "profile": "full",
+    "web": {
+      "search": {}
+    },
+    "sessions": {
+      "visibility": "all"
+    },
+    "agentToAgent": {
+      "enabled": true,
+      "allow": [
+        "product-manager",
+        "architect",
+        "sales-rep",
+        "product_ops"
+      ]
+    }
+  },
+  "bindings": [
+    {
+      "agentId": "product-manager",
+      "match": {
+        "channel": "feishu",
+        "accountId": "product-manager-bot"
+      }
+    },
+    {
+      "agentId": "architect",
+      "match": {
+        "channel": "feishu",
+        "accountId": "architect-bot"
+      }
+    },
+    {
+      "agentId": "sales-rep",
+      "match": {
+        "channel": "feishu",
+        "accountId": "sales-rep-bot"
+      }
+    },
+    {
+      "agentId": "product_ops",
+      "match": {
+        "channel": "feishu",
+        "peer": {
+          "kind": "group",
+          "id": "oc_c452e8142eaa3c39907b3478a7ab6e09"
+        }
+      }
+    }
+  ],
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "session-memory": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "accounts": {
+        "product-manager-bot": {
+          "appId": "${OPENCLAW_FEISHU_APP_ID}",
+          "appSecret": "${OPENCLAW_FEISHU_APP_SECRET}"
+        },
+        "architect-bot": {
+          "appId": "${OPENCLAW_FEISHU_APP_ID2}",
+          "appSecret": "${OPENCLAW_FEISHU_APP_SECRET2}"
+        },
+        "sales-rep-bot": {
+          "appId": "${OPENCLAW_FEISHU_APP_ID3}",
+          "appSecret": "${OPENCLAW_FEISHU_APP_SECRET3}"
+        },
+        "default": {
+          "appId": "${OPENCLAW_FEISHU_APP_ID}",
+          "appSecret": "${OPENCLAW_FEISHU_APP_SECRET}",
+          "groupPolicy": "allowlist",
+          "groupAllowFrom": [
+            "oc_47619ba4ed7e2bea1acae5bba598b92c",
+            "oc_c452e8142eaa3c39907b3478a7ab6e09"
+          ],
+          "dmPolicy": "pairing"
+        }
+      },
+      "connectionMode": "websocket",
+      "domain": "feishu",
+      "requireMention": false,
+      "groups": {
+        "oc_86fa34ce72565bba1ff607074cf24300": {
+          "requireMention": true,
+          "autoReply": {
+            "enabled": false,
+            "minMessages": 1,
+            "minTimeMs": 3000,
+            "debounceMs": 2000
+          }
+        }
+      }
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "2bb665e8fe5d3c60c2b962b2ff6fd2169c560cd8f0dd51b4"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "calendar.add",
+        "reminders.add",
+        "sms.send"
+      ]
+    }
+  },
+  "skills": {
+    "install": {
+      "nodeManager": "npm"
+    }
+  },
+  "plugins": {
+    "allow": [
+      "feishu",
+      "memory-core",
+      "openclaw-weixin"
+    ],
+    "load": {
+      "paths": [
+        "/home/openclaw04/.npm-global/lib/node_modules/openclaw/extensions/memory-core"
+      ]
+    },
+    "slots": {
+      "memory": "memory-core"
+    },
+    "entries": {
+      "feishu": {
+        "enabled": true
+      },
+      "memory-core": {
+        "enabled": true
+      },
+      "memory-lancedb": {
+        "enabled": false
+      },
+      "openclaw-weixin": {
+        "enabled": true
+      }
+    },
+    "installs": {
+      "memory-core": {
+        "source": "path",
+        "spec": "@openclaw/memory-core",
+        "sourcePath": "/home/openclaw04/.npm-global/lib/node_modules/openclaw/extensions/memory-core",
+        "installPath": "/home/openclaw04/.npm-global/lib/node_modules/openclaw/extensions/memory-core",
+        "installedAt": "2026-03-11T05:52:07.129Z"
+      },
+      "openclaw-weixin": {
+        "source": "npm",
+        "spec": "@tencent-weixin/openclaw-weixin",
+        "installPath": "/home/openclaw04/.openclaw/extensions/openclaw-weixin",
+        "version": "1.0.2",
+        "resolvedName": "@tencent-weixin/openclaw-weixin",
+        "resolvedVersion": "1.0.2",
+        "resolvedSpec": "@tencent-weixin/openclaw-weixin@1.0.2",
+        "integrity": "sha512-kYPEowHB/0VWt9nQFee/AS6Fb+jbnu38wjkgZDBdKTuJoBL0IBW2obQ0ymgFKBFJJL9rDwnFrb/17ORGZD/X8Q==",
+        "shasum": "244baf0a873683a9c350d0f0b5bc055c07b0eb39",
+        "resolvedAt": "2026-03-22T13:09:16.162Z",
+        "installedAt": "2026-03-22T13:10:23.907Z"
+      }
+    }
+  }
+}
