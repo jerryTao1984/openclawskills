@@ -19,6 +19,7 @@ curl -fsSL https://raw.githubusercontent.com/jerryTao1984/openclawskills/main/in
 |-------|------|
 | [agent-creator](./skills/agent-creator) | 一键创建 Agent 并绑定飞书群 |
 | [feishu-bitable-manager](./skills/feishu-bitable-manager) | 飞书多维表格项目进度管理（新增/修改/读取） |
+| [prd-doc-creator](./skills/prd-doc-creator) | 创建飞书需求文档（PRD），支持流程图生成 |
 
 ---
 
