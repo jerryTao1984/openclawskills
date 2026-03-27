@@ -14,12 +14,23 @@ description: >
 - 用户说"修改进度"、"更新状态"
 - 用户说"在飞书多维表格中..."
 
+## 项目进度表配置
+
+**多维表格 URL**: https://ewbmxoqgfx.feishu.cn/wiki/T2FqwW8eji1yu7kogIlcmjm7nth?table=tblQzT4DZYnuPB8A&view=vewL6TrEga
+
+| 参数 | 值 |
+|-----|-----|
+| app_token | `T2FqwW8eji1yu7kogIlcmjm7nth` |
+| table_id | `tblQzT4DZYnuPB8A` |
+| view_id | `vewL6TrEga` |
+
 ## 前置条件
 
 确保已配置飞书应用权限：
 - `bitable:record:read` - 读取多维表格记录
 - `bitable:record:write` - 写入多维表格记录
 - `bitable:app` - 获取多维表格信息
+- `wiki:wiki:read` - 读取知识库（因为是知识库中的多维表格）
 
 ## 常用操作
 
@@ -31,7 +42,7 @@ description: >
 
 ```bash
 # 调用飞书 API 获取多维表格记录
-curl -X GET "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records" \
+curl -X GET "https://open.feishu.cn/open-apis/bitable/v1/apps/T2FqwW8eji1yu7kogIlcmjm7nth/tables/tblQzT4DZYnuPB8A/records" \
   -H "Authorization: Bearer {tenant_access_token}"
 ```
 
@@ -62,7 +73,7 @@ curl -X GET "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables
 2. 调用 API 新增记录：
 
 ```bash
-curl -X POST "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records" \
+curl -X POST "https://open.feishu.cn/open-apis/bitable/v1/apps/T2FqwW8eji1yu7kogIlcmjm7nth/tables/tblQzT4DZYnuPB8A/records" \
   -H "Authorization: Bearer {tenant_access_token}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -98,7 +109,7 @@ curl -X POST "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/table
 2. 调用 API 更新记录：
 
 ```bash
-curl -X PUT "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/{record_id}" \
+curl -X PUT "https://open.feishu.cn/open-apis/bitable/v1/apps/T2FqwW8eji1yu7kogIlcmjm7nth/tables/tblQzT4DZYnuPB8A/records/{record_id}" \
   -H "Authorization: Bearer {tenant_access_token}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -125,7 +136,7 @@ curl -X PUT "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables
 **执行 API**：
 
 ```bash
-curl -X POST "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records/search" \
+curl -X POST "https://open.feishu.cn/open-apis/bitable/v1/apps/T2FqwW8eji1yu7kogIlcmjm7nth/tables/tblQzT4DZYnuPB8A/records/search" \
   -H "Authorization: Bearer {tenant_access_token}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -144,24 +155,15 @@ curl -X POST "https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/table
 
 ---
 
-## 配置说明
+## 获取 tenant_access_token
 
-使用前需要在飞书开放平台配置：
-
-1. **创建飞书应用**，获取 App ID 和 App Secret
-2. **配置权限**：
-   - `bitable:record:read`
-   - `bitable:record:write`
-   - `bitable:app`
-3. **获取多维表格信息**：
-   - app_token：多维表格的 token（从 URL 获取）
-   - table_id：数据表的 ID
-
-### 从 URL 获取参数
-
-飞书多维表格 URL 格式：
-```
-https://xxx.feishu.cn/base/{app_token}?table={table_id}
+```bash
+curl -X POST "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "app_id": "{APP_ID}",
+    "app_secret": "{APP_SECRET}"
+  }'
 ```
 
 ---
